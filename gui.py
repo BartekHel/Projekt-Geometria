@@ -17,7 +17,7 @@ class AppWindow:
         self.root.title(tr("title"))
         self.theme_mode = "dark"
         ttk.Style().theme_use("clam")
-        self.center_window(1200, 800)
+        self.center_window(1200, 850)
         self.content_frame = ttk.Frame(self.root, padding=20)
         self.content_frame.pack(fill="both", expand=True)
         self.apply_theme()
@@ -134,8 +134,8 @@ class AppWindow:
             ("Light", lambda: self.set_theme("light"))
         ])
         section(tr("size"), [
-            ("1200x900", lambda: self.center_window(1200, 800)),
-            ("1400x1000", lambda: self.center_window(1400, 900))
+            ("1200x850", lambda: self.center_window(1200, 850)),
+            ("1300x900", lambda: self.center_window(1300, 900))
         ])
 
         ttk.Button(wrapper, text=tr("back"), command=self.render_main_menu, width=30).pack(pady=30)
@@ -240,7 +240,7 @@ class AppWindow:
                 reader = csv.DictReader(f)
                 points = [(float(row["X"]), float(row["Y"])) for row in reader]
 
-            if len(points) != 4:
+            if mode == "intersection" and len(points) != 4:
                 messagebox.showerror(tr("error"), tr("error_info"))
                 return
 
@@ -248,19 +248,26 @@ class AppWindow:
             wrapper = ttk.Frame(self.content_frame)
             wrapper.pack(fill="both", expand=True, anchor="n")
 
-            label_key = "coords_prompt_2" if mode == "intersection" else "coords_prompt_4"
-            ttk.Label(wrapper, text=tr(label_key), font=("Segoe UI", 16)).pack(pady=10)
+            ttk.Label(wrapper, text=tr("coords_prompt"), font=("Segoe UI", 16)).pack(pady=10)
 
             flat_coords = [coord for pt in points for coord in pt]
 
             if mode == "intersection":
                 callback = lambda _: check_intersection(*flat_coords)
+                self.render_intersection_coord_input(wrapper, callback)
             else:
-                callback = lambda _: compute_convex_hull(flat_coords)
-
-            self.render_coord_input(wrapper, callback)
-            self.root.after(100, lambda: self.fill_loaded_points(points))
-            self.root.after(150, self.redraw_all_points)
+                callback = lambda pts: compute_convex_hull(pts)
+                self.render_convex_coord_input(wrapper, callback)
+                needed_points = len(points)
+                existing_points = len(self.entries) // 2
+                while existing_points < needed_points:
+                    self.add_point_callback()
+                    existing_points += 1
+            self.root.after(50, lambda: self.fill_loaded_points(points))
+            if mode == "intersection":
+                self.root.after(100, self.redraw_all_points)
+            else:
+                self.root.after(100, self.update_convex_plot)
 
         except Exception as e:
             messagebox.showerror(tr("error"), f"{tr('save_error')}\n{str(e)}")
@@ -288,19 +295,10 @@ class AppWindow:
         self.clear_frame()
         wrapper = ttk.Frame(self.content_frame)
         wrapper.pack(fill="both", expand=True, anchor="n")
-        ttk.Label(wrapper, text=tr("coords_prompt_2"), font=("Segoe UI", 16)).pack(pady=10)
+        ttk.Label(wrapper, text=tr("coords_prompt"), font=("Segoe UI", 16)).pack(pady=5)
+        self.render_intersection_coord_input(wrapper, self.compute_intersection)
 
-        self.render_coord_input(wrapper, self.compute_intersection)
-
-    def open_convex_hull_window(self):
-        self.clear_frame()
-        wrapper = ttk.Frame(self.content_frame)
-        wrapper.pack(fill="both", expand=False, anchor="n", pady=70)
-
-        ttk.Label(wrapper, text=tr("coords_prompt_4"), font=("Segoe UI", 16)).pack(pady=10)
-        self.render_coord_input(wrapper, self.compute_convex_hull)
-
-    def render_coord_input(self, parent, callback):
+    def render_intersection_coord_input(self, parent, callback):
         self.entries = []
         selected_point_index = tk.IntVar(value=0)
         input_frame = ttk.Frame(parent)
@@ -445,9 +443,35 @@ class AppWindow:
             try:
                 coords = [float(e.get()) for e in self.entries]
                 result = callback(coords)
-                messagebox.showinfo(tr("result"), result)
+                show_custom_result(tr("result"), result)
             except Exception as e:
-                messagebox.showerror(tr("error"), str(e))
+                show_custom_result(tr("error"), str(e))
+
+        def show_custom_result(title, message, x_offset=760, y_offset=580):
+            popup = tk.Toplevel(self.root)
+            popup.title(title)
+            popup.transient(self.root)
+            popup.resizable(False, False)
+            popup.configure(background="#f5f5f5")
+
+            self.root.update_idletasks()
+            root_x = self.root.winfo_rootx()
+            root_y = self.root.winfo_rooty()
+            popup.geometry(f"+{root_x + x_offset}+{root_y + y_offset}")
+
+            frame = ttk.Frame(popup, padding=20)
+            frame.pack(fill="both", expand=True)
+            ttk.Label(frame, text=title, font=("Segoe UI", 13, "bold")).pack(pady=(0, 10))
+
+            ttk.Label(
+                frame,
+                text=message,
+                font=("Segoe UI", 11),
+                wraplength=360,
+                justify="center"
+            ).pack(pady=(0, 15))
+
+            ttk.Button(frame, text="OK", command=popup.destroy).pack(ipadx=4, ipady=2, pady=(10, 0))
 
         def save():
             try:
@@ -472,8 +496,14 @@ class AppWindow:
             plt.close(fig)
             self.render_main_menu()
 
+        def clear():
+            plt.close(fig)
+            self.render_main_menu()
+            self.open_intersection_window()
+
         ttk.Button(parent, text=tr("calculate"), command=calculate, width=30).pack(pady=5)
         ttk.Button(parent, text=tr("save"), command=save, width=30).pack(pady=5)
+        ttk.Button(parent, text=tr("clear"), command=clear, width=30).pack(pady=5)
         ttk.Button(parent, text=tr("back"), command=back_and_close_plot, width=30).pack(pady=5)
 
         def onclick(event):
@@ -518,6 +548,295 @@ class AppWindow:
 
     def compute_intersection(self, coords):
         return check_intersection(*coords)
+
+    def open_convex_hull_window(self):
+        self.clear_frame()
+        wrapper = ttk.Frame(self.content_frame)
+        wrapper.pack(fill="both", expand=True, anchor="n")
+        ttk.Label(wrapper, text=tr("coords_prompt"), font=("Segoe UI", 16)).pack(pady=5)
+        self.render_convex_coord_input(wrapper, self.compute_convex_hull)
+
+    def render_convex_coord_input(self, parent, callback):
+        self.entries = []
+        self.point_dots = []
+        self.point_labels = []
+        selected_point_index = tk.IntVar(value=-1)
+        self.hull_line = None
+
+        box = tk.LabelFrame(parent, bg=self.bg_color, fg="white", padx=10, pady=10)
+        box.pack(padx=10, pady=10, fill="x")
+
+        frame_wrapper = ttk.Frame(box)
+        frame_wrapper.pack(fill="x")
+
+        scroll_canvas = tk.Canvas(frame_wrapper, height=80, highlightthickness=0, background=self.bg_color)
+        h_scroll = ttk.Scrollbar(frame_wrapper, orient="horizontal", command=scroll_canvas.xview)
+        scroll_canvas.configure(xscrollcommand=h_scroll.set)
+
+        scroll_canvas.pack(fill="x")
+        h_scroll.pack(fill="x", pady=0)
+
+        input_frame = ttk.Frame(scroll_canvas)
+        scroll_canvas.create_window((0, 0), window=input_frame, anchor="nw")
+
+        def on_configure(event):
+            scroll_canvas.configure(scrollregion=scroll_canvas.bbox("all"))
+        input_frame.bind("<Configure>", on_configure)
+
+        def update_plot():
+            for dot in self.point_dots:
+                dot.remove()
+            for label in self.point_labels:
+                label.remove()
+            self.point_dots.clear()
+            self.point_labels.clear()
+
+            for i in range(len(self.entries) // 2):
+                try:
+                    x = float(self.entries[i * 2].get())
+                    y = float(self.entries[i * 2 + 1].get())
+                    dot = ax.plot(x, y, 'o', color='tab:blue')[0]
+                    label = ax.text(x + 0.1, y + 0.1, f"P{i+1}", color='black' if self.theme_mode == 'light' else 'white')
+                    self.point_dots.append(dot)
+                    self.point_labels.append(label)
+                except ValueError:
+                    continue
+            canvas.draw()
+        self.update_convex_plot = update_plot
+
+        def add_point():
+            index = len(self.entries) // 2
+            col = index + 1
+
+            if index == 0:
+                ttk.Label(input_frame, text="x", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, padx=(6, 6), sticky="e")
+                ttk.Label(input_frame, text="y", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, padx=(6, 6), sticky="e")
+
+            rb = ttk.Radiobutton(
+                input_frame,
+                text=f"P{index+1}",
+                variable=selected_point_index,
+                value=index
+            )
+            rb.grid(row=0, column=col, padx=6, pady=(0, 2))
+
+            x_entry = ttk.Entry(input_frame, width=6, justify="center")
+            x_entry.grid(row=1, column=col, padx=(6, 6))
+            x_entry.bind("<FocusOut>", lambda e: update_plot())
+            x_entry.bind("<Return>", lambda e: update_plot())
+
+            y_entry = ttk.Entry(input_frame, width=6, justify="center")
+            y_entry.grid(row=2, column=col, padx=(6, 6), pady=(4, 0))
+            y_entry.bind("<FocusOut>", lambda e: update_plot())
+            y_entry.bind("<Return>", lambda e: update_plot())
+
+            def on_select():
+                try:
+                    i = selected_point_index.get()
+                    self.entries[i * 2].focus_set()
+                except:
+                    pass
+
+            rb.configure(command=on_select)
+
+            self.entries.append(x_entry)
+            self.entries.append(y_entry)
+
+            plus_btn.grid_forget()
+            plus_btn.grid(row=1, column=col + 1, rowspan=2, padx=(12, 6), ipadx=4, ipady=2)
+
+            scroll_canvas.update_idletasks()
+            scroll_canvas.xview_moveto(1.0)
+            selected_point_index.set(index)
+        self.add_point_callback = add_point
+
+        plus_btn = ttk.Button(input_frame, text="+", width=3, command=add_point)
+        add_point()
+        selected_point_index.set(0)
+
+        fig, ax = plt.subplots(figsize=(5, 4))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.grid(True)
+        ax.set_title(tr("plot_title"))
+
+        if self.theme_mode == "dark":
+            fig.patch.set_facecolor('#2e2e2e')
+            ax.set_facecolor('#1e1e1e')
+            ax.tick_params(colors='white')
+            ax.xaxis.label.set_color('white')
+            ax.yaxis.label.set_color('white')
+            ax.title.set_color('white')
+            for spine in ax.spines.values():
+                spine.set_color('white')
+
+        canvas = FigureCanvasTkAgg(fig, master=parent)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.pack(pady=0)
+
+        toolbar_frame = ttk.Frame(parent)
+        toolbar_frame.pack(pady=0)
+
+        class CustomToolbar(NavigationToolbar2Tk):
+            toolitems = [t for t in NavigationToolbar2Tk.toolitems if t[0] == 'Pan']
+
+        toolbar = CustomToolbar(canvas, toolbar_frame)
+        toolbar.update()
+
+        if self.theme_mode == "dark":
+            toolbar.config(background="#2e2e2e", borderwidth=0)
+            for child in toolbar.winfo_children():
+                child.configure(background="#2e2e2e", foreground="white", activebackground="#3a3a3a")
+
+        def onclick(event):
+            if hasattr(canvas, 'toolbar') and canvas.toolbar.mode != '':
+                return
+            if event.xdata is None or event.ydata is None:
+                return
+
+            x, y = round(event.xdata, 2), round(event.ydata, 2)
+            index = selected_point_index.get()
+            total_points = len(self.entries) // 2
+            last_index = total_points - 1
+
+            def is_empty(i):
+                return self.entries[i * 2].get().strip() == "" and self.entries[i * 2 + 1].get().strip() == ""
+
+            if 0 <= index < total_points:
+                x_entry = self.entries[index * 2]
+                y_entry = self.entries[index * 2 + 1]
+
+                if is_empty(index):
+                    x_entry.insert(0, str(x))
+                    y_entry.insert(0, str(y))
+
+                    for i in range(total_points):
+                        if is_empty(i):
+                            selected_point_index.set(i)
+                            break
+                elif index == last_index:
+                    add_point()
+                    self.entries[-2].insert(0, str(x))
+                    self.entries[-1].insert(0, str(y))
+                    selected_point_index.set(len(self.entries) // 2 - 1)
+                else:
+                    x_entry.delete(0, tk.END)
+                    x_entry.insert(0, str(x))
+                    y_entry.delete(0, tk.END)
+                    y_entry.insert(0, str(y))
+
+                    for i in range(total_points):
+                        if is_empty(i):
+                            selected_point_index.set(i)
+                            break
+            else:
+                add_point()
+                self.entries[-2].insert(0, str(x))
+                self.entries[-1].insert(0, str(y))
+                selected_point_index.set(len(self.entries) // 2 - 1)
+
+            update_plot()
+
+        canvas.mpl_connect("button_press_event", onclick)
+
+        def calculate():
+            try:
+                coords = []
+                for i in range(0, len(self.entries) - 1, 2):
+                    x_text = self.entries[i].get().strip()
+                    y_text = self.entries[i + 1].get().strip()
+
+                    if x_text == "" or y_text == "":
+                        show_custom_result(tr("error"), tr("empty_coord_error"))
+                        return
+
+                    try:
+                        x = float(x_text)
+                        y = float(y_text)
+                        coords.append((x, y))
+                    except ValueError:
+                        show_custom_result(tr("error"), tr("invalid_coord_error"))
+                        return
+                result_msg, hull = callback(coords)
+                draw_convex_hull(hull)
+                show_custom_result(tr("result"), result_msg)
+            except Exception as e:
+                show_custom_result(tr("error"), str(e))
+
+        def draw_convex_hull(hull):
+            if not hull:
+                return
+
+            if self.hull_line:
+                self.hull_line.remove()
+                self.hull_line = None
+
+            if len(hull) >= 2:
+                loop = hull + [hull[0]] if len(hull) > 2 else hull
+                xs, ys = zip(*loop)
+                self.hull_line = ax.plot(xs, ys, color='blue', linewidth=2)[0]
+
+            canvas.draw()
+        self.draw_convex_hull = draw_convex_hull
+
+        def save():
+            try:
+                coords = [float(e.get()) for e in self.entries]
+                points = [(coords[i], coords[i+1]) for i in range(0, len(coords), 2)]
+
+                os.makedirs("saves", exist_ok=True)
+                timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+                filename = f"saves/convex_hull/points_{timestamp}.csv"
+
+                with open(filename, mode="w", newline="", encoding="utf-8") as f:
+                    writer = csv.writer(f)
+                    writer.writerow(["Point", "X", "Y"])
+                    for i, (x, y) in enumerate(points, start=1):
+                        writer.writerow([f"P{i}", x, y])
+
+                messagebox.showinfo(tr("saved"), f"{tr('save_success')}\n{filename}")
+            except Exception as e:
+                messagebox.showerror(tr("error"), f"{tr('save_error')}\n{str(e)}")
+
+        def show_custom_result(title, message, x_offset=760, y_offset=580):
+            popup = tk.Toplevel(self.root)
+            popup.title(title)
+            popup.transient(self.root)
+            popup.resizable(False, False)
+            popup.configure(background="#f5f5f5")
+
+            self.root.update_idletasks()
+            root_x = self.root.winfo_rootx()
+            root_y = self.root.winfo_rooty()
+            popup.geometry(f"+{root_x + x_offset}+{root_y + y_offset}")
+
+            frame = ttk.Frame(popup, padding=20)
+            frame.pack(fill="both", expand=True)
+            ttk.Label(frame, text=title, font=("Segoe UI", 13, "bold")).pack(pady=(0, 10))
+
+            ttk.Label(
+                frame,
+                text=message,
+                font=("Segoe UI", 11),
+                wraplength=360,
+                justify="center"
+            ).pack(pady=(0, 15))
+
+            ttk.Button(frame, text="OK", command=popup.destroy).pack(ipadx=4, ipady=2, pady=(10, 0))
+
+        def back_and_close_plot():
+            plt.close(fig)
+            self.render_main_menu()
+
+        def clear():
+            plt.close(fig)
+            self.render_main_menu()
+            self.open_convex_hull_window()
+
+        ttk.Button(parent, text=tr("calculate"), command=calculate, width=30).pack(pady=5)
+        ttk.Button(parent, text=tr("save"), command=save, width=30).pack(pady=5)
+        ttk.Button(parent, text=tr("clear"), command=clear, width=30).pack(pady=5)
+        ttk.Button(parent, text=tr("back"), command=back_and_close_plot, width=30).pack(pady=5)
 
     def compute_convex_hull(self, coords):
         return compute_convex_hull(coords)

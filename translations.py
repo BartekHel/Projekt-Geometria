@@ -16,10 +16,9 @@ translations = {
         "prompt": "Wybierz:",
         "intersection": "1. Przecięcie dwóch odcinków",
         "convex": "2. Otoczka wypukła",
-        "calculate": "Oblicz",
+        "calculate": "Wyznacz",
         "save": "Zapisz",
-        "coords_prompt_2": "Podaj współrzędne punktów:",
-        "coords_prompt_4": "Podaj współrzędne 4 punktów:",
+        "coords_prompt": "Podaj współrzędne punktów:",
         "info_text": (
             "Projekt aplikacji geometrycznej składającej się z dwóch modułów:\n\n"
             "1. Przecięcie dwóch odcinków – określa, czy odcinki przecinają się "
@@ -28,7 +27,7 @@ translations = {
             "i określa jej typ: punkt, odcinek, trójkąt lub czworokąt.\n\n"
         ),
         "info_title": "Informacje o projekcie",
-        "plot_title": "Kliknij, aby zaznaczyć punkty",
+        "plot_title": "Kliknij aby zaznaczyć punkty",
         "save_success": "Punkty zapisano do pliku:",
         "save_error": "Nie udało się zapisać punktów:",
         "saved": "Zapisano",
@@ -41,7 +40,32 @@ translations = {
         "no_intersection": "Odcinki nie przecinają się.",
         "intersect_at": "Odcinki przecinają się w punkcie: ({x:.2f}, {y:.2f})",
         "overlap": "Odcinki nakładają się na odcinku od {a} do {b}",
-        "intersect_but_error": "Odcinki przecinają się ale nie udało się znaleźć punktu przecięcia."
+        "intersect_but_error": "Odcinki przecinają się ale nie udało się znaleźć punktu przecięcia.",
+        "empty_coord_error": "Uzupełnij wszystkie współrzędne punktów.",
+        "invalid_coord_error": "Nieprawidłowe wartości współrzędnych.",
+        "clear": "Wyczyść",
+        "calculate": "Wyznacz",
+        "save": "Zapisz",
+        "clear": "Wyczyść",
+        "back": "Wstecz",
+        "coords_prompt": "Podaj współrzędne punktów",
+
+        "plot_title": "Wykres punktów",
+
+        "no_points": "Brak punktów.",
+        "convex_is_point": "Otoczka wypukła to punkt.",
+        "convex_is_segment": "Otoczka wypukła to odcinek.",
+        "convex_is_triangle": "Otoczka wypukła to trójkąt.",
+        "convex_is_quadrilateral": "Otoczka wypukła to czworokąt.",
+        "convex_is_polygon": "Otoczka wypukła to wielokąt z {n} wierzchołkami.",
+        "convex_vertices": "Wierzchołki otoczki",
+
+        "error": "Błąd",
+        "empty_coord_error": "Wszystkie współrzędne muszą być uzupełnione.",
+        "invalid_coord_error": "Nieprawidłowy format współrzędnych.",
+        "saved": "Zapisano",
+        "save_success": "Dane zostały zapisane pomyślnie.",
+        "save_error": "Nie udało się zapisać danych."
     },
     "EN": {
         "title": "Geo",
@@ -60,8 +84,7 @@ translations = {
         "convex": "2. Convex hull",
         "calculate": "Calculate",
         "save": "Save",
-        "coords_prompt_2": "Enter coordinates:",
-        "coords_prompt_4": "Enter coordinates of 4 points:",
+        "coords_prompt": "Enter coordinates:",
         "info_text": (
             "A geometry application project consisting of two modules:\n\n"
             "1. Segment intersection – determines whether two line segments intersect "
@@ -83,7 +106,32 @@ translations = {
         "no_intersection": "Segments do not intersect.",
         "intersect_at": "Segments intersect at point: ({x:.2f}, {y:.2f})",
         "overlap": "Segments overlap from {a} to {b}",
-        "intersect_but_error": "Segments intersect but intersection point could not be found."
+        "intersect_but_error": "Segments intersect but intersection point could not be found.",
+        "empty_coord_error": "Please fill in all point coordinates.",
+        "invalid_coord_error": "Invalid coordinate values.",
+        "clear": "Clear",
+        "calculate": "Calculate",
+        "save": "Save",
+        "clear": "Clear",
+        "back": "Back",
+        "coords_prompt": "Enter coordinates of the points",
+
+        "plot_title": "Point plot",
+
+        "no_points": "No points provided.",
+        "convex_is_point": "The convex hull is a point.",
+        "convex_is_segment": "The convex hull is a segment.",
+        "convex_is_triangle": "The convex hull is a triangle.",
+        "convex_is_quadrilateral": "The convex hull is a quadrilateral.",
+        "convex_is_polygon": "The convex hull is a polygon with {n} vertices.",
+        "convex_vertices": "Vertices of the hull",
+
+        "error": "Error",
+        "empty_coord_error": "All coordinates must be filled in.",
+        "invalid_coord_error": "Invalid coordinate format.",
+        "saved": "Saved",
+        "save_success": "Data saved successfully.",
+        "save_error": "Failed to save data."
     }
 }
 
