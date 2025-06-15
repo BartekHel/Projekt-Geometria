@@ -33,7 +33,8 @@ Krok po kroku:
    - Zwraca komunikat:
      - brak przecięcia,
      - przecięcie w konkretnym punkcie,
-     - informacja o nałożeniu się (gdy są współliniowe i nakładają się częściowo lub całkowicie).
+     - informacja o nałożeniu się (gdy są współliniowe i nakładają się częściowo lub całkowicie),
+     - wszystkie punkty są identyczne.
 """
 
 def orientation(p, q, r):
@@ -108,8 +109,12 @@ def check_intersection(x1, y1, x2, y2, x3, y3, x4, y4):
     Zwraca komunikat tekstowy:
     - brak przecięcia,
     - przecięcie w punkcie,
-    - nałożenie się odcinków.
+    - nałożenie się odcinków,
+    - wszystkie punkty są identyczne.
     """
+    if len({(x1, y1), (x2, y2), (x3, y3), (x4, y4)}) == 1:
+        return tr("all_same_point").format(x=x1, y=y1)
+
     p1, q1 = (x1, y1), (x2, y2)
     p2, q2 = (x3, y3), (x4, y4)
 

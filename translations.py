@@ -38,8 +38,8 @@ translations = {
         "delete_confirm": "Czy na pewno usunąć:\n{filename}?",
         "result": "Wynik",
         "no_intersection": "Odcinki nie przecinają się.",
-        "intersect_at": "Odcinki przecinają się w punkcie: ({x:.2f}, {y:.2f})",
-        "overlap": "Odcinki nakładają się na odcinku od {a} do {b}",
+        "intersect_at": "Odcinki przecinają się w punkcie:\n({x:.2f}, {y:.2f})",
+        "overlap": "Odcinki nakładają się na odcinku\nod {a} do {b}",
         "intersect_but_error": "Odcinki przecinają się ale nie udało się znaleźć punktu przecięcia.",
         "empty_coord_error": "Uzupełnij wszystkie współrzędne punktów.",
         "invalid_coord_error": "Nieprawidłowe wartości współrzędnych.",
@@ -49,10 +49,8 @@ translations = {
         "clear": "Wyczyść",
         "back": "Wstecz",
         "coords_prompt": "Podaj współrzędne punktów",
-        "missing_coords": "Nie podano wszystkich współrzędnych. Proszę wypełnić wszystkie pola, aby zdefiniować dwa odcinki",
-
+        "missing_coords": "Nie podano wszystkich współrzędnych.",
         "plot_title": "Wykres punktów",
-
         "no_points": "Brak punktów.",
         "convex_is_point": "Otoczka wypukła to punkt.",
         "convex_is_segment": "Otoczka wypukła to odcinek.",
@@ -60,13 +58,13 @@ translations = {
         "convex_is_quadrilateral": "Otoczka wypukła to czworokąt.",
         "convex_is_polygon": "Otoczka wypukła to wielokąt z {n} wierzchołkami.",
         "convex_vertices": "Wierzchołki otoczki",
-
         "error": "Błąd",
         "empty_coord_error": "Wszystkie współrzędne muszą być uzupełnione.",
         "invalid_coord_error": "Nieprawidłowy format współrzędnych.",
         "saved": "Zapisano",
         "save_success": "Dane zostały zapisane pomyślnie.",
-        "save_error": "Nie udało się zapisać danych."
+        "save_error": "Nie udało się zapisać danych.",
+        "all_same_point": "Wszystkie punkty są identyczne:\n({x}, {y})"
     },
     "EN": {
         "title": "Geo",
@@ -106,8 +104,8 @@ translations = {
         "delete_confirm": "Are you sure you want to delete:\n{filename}?",
         "result": "Result",
         "no_intersection": "Segments do not intersect.",
-        "intersect_at": "Segments intersect at point: ({x:.2f}, {y:.2f})",
-        "overlap": "Segments overlap from {a} to {b}",
+        "intersect_at": "Segments intersect at point:\n({x:.2f}, {y:.2f})",
+        "overlap": "Segments overlap from\n{a} to {b}",
         "intersect_but_error": "Segments intersect but intersection point could not be found.",
         "empty_coord_error": "Please fill in all point coordinates.",
         "invalid_coord_error": "Invalid coordinate values.",
@@ -117,9 +115,7 @@ translations = {
         "clear": "Clear",
         "back": "Back",
         "coords_prompt": "Enter coordinates of the points",
-
         "plot_title": "Point plot",
-
         "no_points": "No points provided.",
         "convex_is_point": "The convex hull is a point.",
         "convex_is_segment": "The convex hull is a segment.",
@@ -127,13 +123,13 @@ translations = {
         "convex_is_quadrilateral": "The convex hull is a quadrilateral.",
         "convex_is_polygon": "The convex hull is a polygon with {n} vertices.",
         "convex_vertices": "Vertices of the hull",
-
         "error": "Error",
         "empty_coord_error": "All coordinates must be filled in.",
         "invalid_coord_error": "Invalid coordinate format.",
         "saved": "Saved",
         "save_success": "Data saved successfully.",
-        "save_error": "Failed to save data."
+        "save_error": "Failed to save data.",
+        "all_same_point": "All points are identical:\n({x}, {y})"
     }
 }
 

@@ -821,7 +821,6 @@ class AppWindow:
                         writer.writerow([f"P{i}", x, y])
 
                 messagebox.showinfo(tr("saved"), f"{tr('save_success')}\n{filename}")
-
             except ValueError:
                 messagebox.showerror(tr("error"), tr("invalid_coord_error"))
             except Exception as e:
