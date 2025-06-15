@@ -441,9 +441,17 @@ class AppWindow:
 
         def calculate():
             try:
-                coords = [float(e.get()) for e in self.entries]
+                coords_str = [e.get().strip() for e in self.entries]
+                if any(not s for s in coords_str):
+                    show_custom_result(tr("error"), tr("missing_coords"))
+                    return
+                coords = [float(s) for s in coords_str]
+
                 result = callback(coords)
                 show_custom_result(tr("result"), result)
+
+            except ValueError:
+                show_custom_result(tr("error"), tr("invalid_coord_error"))
             except Exception as e:
                 show_custom_result(tr("error"), str(e))
 
@@ -474,12 +482,25 @@ class AppWindow:
 
         def save():
             try:
-                coords = [float(e.get()) for e in self.entries]
-                points = [(coords[i], coords[i+1]) for i in range(0, 8, 2)]
+                coords_str = [e.get().strip() for e in self.entries]
 
-                os.makedirs("saves", exist_ok=True)
+                if any(not s for s in coords_str):
+                    messagebox.showerror(tr("error"), tr("missing_coords"))
+                    return
+
+                try:
+                    coords = [float(s) for s in coords_str]
+                except ValueError:
+                    messagebox.showerror(tr("error"), tr("invalid_coord_error"))
+                    return
+
+                points = [(coords[i], coords[i + 1]) for i in range(0, 8, 2)]
+
+                save_dir = os.path.join("saves", "intersection")
+                os.makedirs(save_dir, exist_ok=True)
+
                 timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-                filename = f"saves/intersection/points_{timestamp}.csv"
+                filename = os.path.join(save_dir, f"points_{timestamp}.csv")
 
                 with open(filename, mode="w", newline="", encoding="utf-8") as f:
                     writer = csv.writer(f)
@@ -780,12 +801,18 @@ class AppWindow:
 
         def save():
             try:
-                coords = [float(e.get()) for e in self.entries]
-                points = [(coords[i], coords[i+1]) for i in range(0, len(coords), 2)]
+                coords = [float(e.get()) for e in self.entries if e.get().strip()]
+                points = [(coords[i], coords[i + 1]) for i in range(0, len(coords), 2)]
 
-                os.makedirs("saves", exist_ok=True)
+                if not points:
+                    messagebox.showerror(tr("error"), tr("empty_coord_error"))
+                    return
+
+                save_dir = os.path.join("saves", "convex_hull")
+                os.makedirs(save_dir, exist_ok=True)
+
                 timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-                filename = f"saves/convex_hull/points_{timestamp}.csv"
+                filename = os.path.join(save_dir, f"points_{timestamp}.csv")
 
                 with open(filename, mode="w", newline="", encoding="utf-8") as f:
                     writer = csv.writer(f)
@@ -794,6 +821,9 @@ class AppWindow:
                         writer.writerow([f"P{i}", x, y])
 
                 messagebox.showinfo(tr("saved"), f"{tr('save_success')}\n{filename}")
+
+            except ValueError:
+                messagebox.showerror(tr("error"), tr("invalid_coord_error"))
             except Exception as e:
                 messagebox.showerror(tr("error"), f"{tr('save_error')}\n{str(e)}")
 
