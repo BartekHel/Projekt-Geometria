@@ -49,6 +49,7 @@ translations = {
         "clear": "Wyczyść",
         "back": "Wstecz",
         "coords_prompt": "Podaj współrzędne punktów",
+        "missing_coords": "Nie podano wszystkich współrzędnych. Proszę wypełnić wszystkie pola, aby zdefiniować dwa odcinki",
 
         "plot_title": "Wykres punktów",
 
@@ -85,6 +86,7 @@ translations = {
         "calculate": "Calculate",
         "save": "Save",
         "coords_prompt": "Enter coordinates:",
+        "missing_coords": "Not all coordinates have been provided. Please fill in all fields to define the two segments",
         "info_text": (
             "A geometry application project consisting of two modules:\n\n"
             "1. Segment intersection – determines whether two line segments intersect "
