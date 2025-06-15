@@ -22,11 +22,9 @@ def compute_convex_hull(points):
     # 2. Obsługa przypadków brzegowych (mniej niż 3 punkty)
     if n == 0:
         return tr("no_points"), []
-
     elif n == 1:
         x, y = unique_points[0]
         return f"{tr('convex_is_point')}\n{tr('convex_vertices')}:\nP1 ({x}, {y})", [(x, y)]
-
     elif n == 2:
         (x1, y1), (x2, y2) = unique_points
         return f"{tr('convex_is_segment')}\n{tr('convex_vertices')}:\nP1 ({x1}, {y1})\nP2 ({x2}, {y2})", [(x1, y1), (x2, y2)]

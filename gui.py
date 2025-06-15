@@ -447,7 +447,7 @@ class AppWindow:
             except Exception as e:
                 show_custom_result(tr("error"), str(e))
 
-        def show_custom_result(title, message, x_offset=760, y_offset=580):
+        def show_custom_result(title, message, x_offset=810, y_offset=180):
             popup = tk.Toplevel(self.root)
             popup.title(title)
             popup.transient(self.root)
@@ -470,7 +470,6 @@ class AppWindow:
                 wraplength=360,
                 justify="center"
             ).pack(pady=(0, 15))
-
             ttk.Button(frame, text="OK", command=popup.destroy).pack(ipadx=4, ipady=2, pady=(10, 0))
 
         def save():
@@ -798,7 +797,7 @@ class AppWindow:
             except Exception as e:
                 messagebox.showerror(tr("error"), f"{tr('save_error')}\n{str(e)}")
 
-        def show_custom_result(title, message, x_offset=760, y_offset=580):
+        def show_custom_result(title, message, x_offset=810, y_offset=210):
             popup = tk.Toplevel(self.root)
             popup.title(title)
             popup.transient(self.root)
@@ -821,7 +820,6 @@ class AppWindow:
                 wraplength=360,
                 justify="center"
             ).pack(pady=(0, 15))
-
             ttk.Button(frame, text="OK", command=popup.destroy).pack(ipadx=4, ipady=2, pady=(10, 0))
 
         def back_and_close_plot():
