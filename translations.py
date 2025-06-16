@@ -21,8 +21,8 @@ translations = {
         "coords_prompt": "Podaj współrzędne punktów:",
         "info_text": (
             "Projekt aplikacji geometrycznej składającej się z dwóch modułów:\n\n"
-            "1. Przecięcie dwóch odcinków – określa, czy odcinki przecinają się "
-            "i zwraca punkt przecięcia lub odcinek przecięcia, jeśli się pokrywają.\n\n"
+            "1. Przecięcie dwóch odcinków – określa, czy odcinki (o współrzędnych np. 2,1 3,7 oraz 4,2 0,0) "
+            "przecinają się i zwraca punkt przecięcia lub odcinek przecięcia, jeśli się pokrywają.\n\n"
             "2. Otoczka wypukła – wyznacza otoczkę wypukłą zbioru punktów "
             "i określa jej typ: punkt, odcinek, trójkąt lub czworokąt.\n\n"
         ),
@@ -64,7 +64,8 @@ translations = {
         "saved": "Zapisano",
         "save_success": "Dane zostały zapisane pomyślnie.",
         "save_error": "Nie udało się zapisać danych.",
-        "all_same_point": "Wszystkie punkty są identyczne:\n({x}, {y})"
+        "all_same_point": "Wszystkie punkty są identyczne:\n({x}, {y})",
+        "special_info": "Przecięcie? Jeszcze jak!"
     },
     "EN": {
         "title": "Geo",
@@ -87,8 +88,8 @@ translations = {
         "missing_coords": "Not all coordinates have been provided. Please fill in all fields to define the two segments",
         "info_text": (
             "A geometry application project consisting of two modules:\n\n"
-            "1. Segment intersection – determines whether two line segments intersect "
-            "and returns the point of intersection or the overlapping segment if they are collinear.\n\n"
+            "1. Segment intersection – determines whether two line segments (with coordinates e.g. 2,1 3,7 and 4,2 0,0) "
+            "intersect and returns the point of intersection or the overlapping segment if they are collinear.\n\n"
             "2. Convex hull – computes the convex hull of a set of points "
             "and identifies its type: point, segment, triangle, or quadrilateral.\n\n"
         ),
@@ -129,7 +130,8 @@ translations = {
         "saved": "Saved",
         "save_success": "Data saved successfully.",
         "save_error": "Failed to save data.",
-        "all_same_point": "All points are identical:\n({x}, {y})"
+        "all_same_point": "All points are identical:\n({x}, {y})",
+        "special_info": "Intersection? You bet!"
     }
 }
 

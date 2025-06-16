@@ -113,26 +113,26 @@ def check_intersection(x1, y1, x2, y2, x3, y3, x4, y4):
     - wszystkie punkty są identyczne.
     """
     if len({(x1, y1), (x2, y2), (x3, y3), (x4, y4)}) == 1:
-        return tr("all_same_point").format(x=x1, y=y1)
+        return (tr("all_same_point").format(x=x1, y=y1), (x1, y1))
 
     p1, q1 = (x1, y1), (x2, y2)
     p2, q2 = (x3, y3), (x4, y4)
 
     if not segments_intersect(p1, q1, p2, q2):
-        return "Odcinki nie przecinają się."
+        return (tr("no_intersection"), None)
 
     # Sprawdzenie czy są współliniowe i nachodzą na siebie
     if orientation(p1, q1, p2) == 0 and orientation(p1, q1, q2) == 0:
         points = sorted([p1, q1, p2, q2])
         a, b = points[1], points[2]
         if a == b:
-            return tr("intersect_at").format(x=a[0], y=a[1])
+            return (tr("intersect_at").format(x=a[0], y=a[1]), a)
         else:
-            return tr("overlap").format(a=a, b=b)
+            return (tr("overlap").format(a=a, b=b), (a, b))
 
     # Punkt przecięcia w przypadku zwykłego przecięcia
     pt = intersection_point(p1, q1, p2, q2)
     if pt:
-        return tr("intersect_at").format(x=pt[0], y=pt[1])
+        return (tr("intersect_at").format(x=pt[0], y=pt[1]), pt)
     else:
-        return tr("intersect_but_error")
+        return (tr("intersect_but_error"), None)

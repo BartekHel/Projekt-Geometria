@@ -106,6 +106,10 @@ class AppWindow:
         ttk.Label(wrapper, text=tr("options"), font=("Segoe UI", 22, "bold")).pack(pady=(30, 10))
 
         def section(title, options):
+            fg_color = "#ffffff" if self.theme_mode == "dark" else "#000000"
+            bg_color = self.bg_color
+            border_color = "#555555" if self.theme_mode == "dark" else "#999999"
+
             frame = tk.LabelFrame(
                 wrapper,
                 text=title,
@@ -116,10 +120,14 @@ class AppWindow:
                 bd=2,
                 relief="groove",
                 width=600,
-                bg=self.bg_color
+                bg=bg_color,
+                fg=fg_color,
+                highlightbackground=border_color,
+                highlightcolor=border_color
             )
             frame.pack(pady=15, anchor="center")
             btn_row = ttk.Frame(frame)
+            btn_row.configure(style="TFrame")
             btn_row.pack(anchor="center")
 
             for label, func in options:
@@ -439,17 +447,33 @@ class AppWindow:
                     segment_lines[1].remove()
                     segment_lines[1] = None
 
+        intersection_visual = [None]
         def calculate():
             try:
                 coords_str = [e.get().strip() for e in self.entries]
                 if any(not s for s in coords_str):
                     show_custom_result(tr("error"), tr("missing_coords"))
                     return
+
                 coords = [float(s) for s in coords_str]
+                result_text, intersection_data = callback(coords)
 
-                result = callback(coords)
-                show_custom_result(tr("result"), result)
+                if coords == [2.0, 1.0, 3.0, 7.0, 4.0, 2.0, 0.0, 0.0]:
+                    result_text = f"{tr('special_info')}\n{result_text}"
 
+                if intersection_visual[0]:
+                    intersection_visual[0].remove()
+                    intersection_visual[0] = None
+
+                if intersection_data:
+                    if isinstance(intersection_data[0], tuple):
+                        (x1, y1), (x2, y2) = intersection_data
+                        intersection_visual[0] = ax.plot([x1, x2], [y1, y2], color='#00bfff', linewidth=2)[0]
+                    else:
+                        x, y = intersection_data
+                        intersection_visual[0] = ax.plot(x, y, 'o', color='#00bfff', markersize=8)[0]
+                canvas.draw()
+                show_custom_result(tr("result"), result_text)
             except ValueError:
                 show_custom_result(tr("error"), tr("invalid_coord_error"))
             except Exception as e:
