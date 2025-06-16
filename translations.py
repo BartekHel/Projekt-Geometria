@@ -24,7 +24,7 @@ translations = {
             "1. Przecięcie dwóch odcinków – określa, czy odcinki (o współrzędnych np. 2,1 3,7 oraz 4,2 0,0) "
             "przecinają się i zwraca punkt przecięcia lub odcinek przecięcia, jeśli się pokrywają.\n\n"
             "2. Otoczka wypukła – wyznacza otoczkę wypukłą zbioru punktów "
-            "i określa jej typ: punkt, odcinek, trójkąt lub czworokąt.\n\n"
+            "i określa jej typ: punkt, odcinek, trójkąt, czworokąt lub wielokąt.\n\n"
         ),
         "info_title": "Informacje o projekcie",
         "plot_title": "Kliknij aby zaznaczyć punkty",
@@ -91,7 +91,7 @@ translations = {
             "1. Segment intersection – determines whether two line segments (with coordinates e.g. 2,1 3,7 and 4,2 0,0) "
             "intersect and returns the point of intersection or the overlapping segment if they are collinear.\n\n"
             "2. Convex hull – computes the convex hull of a set of points "
-            "and identifies its type: point, segment, triangle, or quadrilateral.\n\n"
+            "and identifies its type: point, segment, triangle, quadrilateral or polygon.\n\n"
         ),
         "info_title": "Project Info",
         "plot_title": "Click to mark points",
