@@ -34,7 +34,8 @@ Krok po kroku:
      - brak przecięcia,
      - przecięcie w konkretnym punkcie,
      - informacja o nałożeniu się (gdy są współliniowe i nakładają się częściowo lub całkowicie),
-     - wszystkie punkty są identyczne.
+     - wszystkie punkty są identyczne,
+     - podano punkty, nie odcinki.
 """
 
 def orientation(p, q, r):
@@ -110,13 +111,18 @@ def check_intersection(x1, y1, x2, y2, x3, y3, x4, y4):
     - brak przecięcia,
     - przecięcie w punkcie,
     - nałożenie się odcinków,
-    - wszystkie punkty są identyczne.
+    - wszystkie punkty są identyczne,
+    - podano punkty, nie odcinki.
     """
-    if len({(x1, y1), (x2, y2), (x3, y3), (x4, y4)}) == 1:
-        return (tr("all_same_point").format(x=x1, y=y1), (x1, y1))
-
     p1, q1 = (x1, y1), (x2, y2)
     p2, q2 = (x3, y3), (x4, y4)
+
+    # Sprawdzenie, czy oba odcinki są punktami
+    if p1 == q1 and p2 == q2:
+        if p1 == p2:
+            return (tr("all_same_point").format(x=x1, y=y1), (x1, y1))
+        else:
+            return (tr("pairs_same_point"), None)
 
     if not segments_intersect(p1, q1, p2, q2):
         return (tr("no_intersection"), None)

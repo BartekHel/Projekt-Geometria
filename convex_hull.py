@@ -5,6 +5,7 @@ from translations import tr
 #
 # Działanie:
 # - Dla mniej niż 3 unikalnych punktów zwraca odpowiedni komunikat (punkt / odcinek).
+# - Dla kilku punktów na jednej linii zwraca komunikat o odcinku.
 # - Dla 3 lub więcej punktów konstruuje otoczkę wypukłą:
 #   * sortuje punkty rosnąco według x i y,
 #   * buduje dolną i górną część otoczki,
@@ -19,7 +20,7 @@ def compute_convex_hull(points):
     unique_points = list(set(points))  # unikamy wielokrotnego wpisania tego samego punktu
     n = len(unique_points)
 
-    # 2. Obsługa przypadków brzegowych (mniej niż 3 punkty)
+    # 2. Obsługa przypadków brzegowych (mniej niż 3 punkty lub więcej ale na jednej linii)
     if n == 0:
         return tr("no_points"), []
     elif n == 1:
@@ -28,6 +29,12 @@ def compute_convex_hull(points):
     elif n == 2:
         (x1, y1), (x2, y2) = unique_points
         return f"{tr('convex_is_segment')}\n{tr('convex_vertices')}:\nP1 ({x1}, {y1})\nP2 ({x2}, {y2})", [(x1, y1), (x2, y2)]
+    elif all((unique_points[1][0] - unique_points[0][0]) * (y - unique_points[0][1]) == (x - unique_points[0][0]) * (unique_points[1][1] - unique_points[0][1])
+        for x, y in unique_points[2:]):
+            # Wszystkie punkty są współliniowe
+            sorted_points = sorted(unique_points)
+            (x1, y1), (x2, y2) = sorted_points[0], sorted_points[-1]
+            return f"{tr('convex_is_segment')}\n{tr('convex_vertices')}:\nP1 ({x1}, {y1})\nP2 ({x2}, {y2})", [(x1, y1), (x2, y2)]
 
     # 3. Dodanie indeksów do punktów (potrzebne do etykietowania np. P1, P2)
     indexed_points = [(x, y, i + 1) for i, (x, y) in enumerate(points)]

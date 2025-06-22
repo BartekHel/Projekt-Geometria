@@ -277,6 +277,21 @@ class AppWindow:
             else:
                 self.root.after(100, self.update_convex_plot)
 
+            def center_if_out_of_view():
+                try:
+                    x1, y1 = points[0]
+                    xlim = self.figure.axes[0].get_xlim()
+                    ylim = self.figure.axes[0].get_ylim()
+
+                    if not (xlim[0] <= x1 <= xlim[1]) or not (ylim[0] <= y1 <= ylim[1]):
+                        self.figure.axes[0].set_xlim(x1 - 5, x1 + 5)
+                        self.figure.axes[0].set_ylim(y1 - 5, y1 + 5)
+                        self.canvas.draw()
+                except Exception:
+                    pass
+
+            self.root.after(100, center_if_out_of_view)
+
         except Exception as e:
             messagebox.showerror(tr("error"), f"{tr('save_error')}\n{str(e)}")
 
@@ -395,7 +410,15 @@ class AppWindow:
                     point_labels[index].remove()
 
                 point_dots[index] = ax.plot(x_val, y_val, 'o', color=colors[index])[0]
-                point_labels[index] = ax.text(x_val + 0.1, y_val + 0.1, f"P{index+1}", color=colors[index])
+                point_labels[index] = ax.annotate(
+                    f"P{index+1}",
+                    (x_val, y_val),
+                    xytext=(5, 5),
+                    textcoords="offset points",
+                    color=colors[index],
+                    fontsize=10,
+                    weight="bold"
+                )
                 update_lines()
                 canvas.draw()
             except ValueError:
@@ -573,7 +596,15 @@ class AppWindow:
                 point_labels[index].remove()
 
             point_dots[index] = ax.plot(x, y, 'o', color=colors[index])[0]
-            point_labels[index] = ax.text(x + 0.1, y + 0.1, f"P{index+1}", color=colors[index])
+            point_labels[index] = ax.annotate(
+                f"P{index+1}",
+                (x, y),
+                xytext=(5, 5),
+                textcoords="offset points",
+                color=colors[index],
+                fontsize=10,
+                weight="bold"
+            )
             update_lines()
             canvas.draw()
 
@@ -589,6 +620,8 @@ class AppWindow:
                 update_plot_from_entry(i)
 
         self.redraw_all_points = redraw_all_points
+        self.figure = fig
+        self.canvas = canvas
 
     def compute_intersection(self, coords):
         return check_intersection(*coords)
@@ -640,7 +673,15 @@ class AppWindow:
                     x = float(self.entries[i * 2].get())
                     y = float(self.entries[i * 2 + 1].get())
                     dot = ax.plot(x, y, 'o', color='tab:blue')[0]
-                    label = ax.text(x + 0.1, y + 0.1, f"P{i+1}", color='black' if self.theme_mode == 'light' else 'white')
+                    label = ax.annotate(
+                        f"P{i+1}",
+                        (x, y),
+                        xytext=(5, 5),
+                        textcoords="offset points",
+                        color='black' if self.theme_mode == 'light' else 'white',
+                        fontsize=10,
+                        weight="bold"
+                    )
                     self.point_dots.append(dot)
                     self.point_labels.append(label)
                 except ValueError:
@@ -888,6 +929,9 @@ class AppWindow:
         ttk.Button(parent, text=tr("save"), command=save, width=30).pack(pady=5)
         ttk.Button(parent, text=tr("clear"), command=clear, width=30).pack(pady=5)
         ttk.Button(parent, text=tr("back"), command=back_and_close_plot, width=30).pack(pady=5)
+
+        self.figure = fig
+        self.canvas = canvas
 
     def compute_convex_hull(self, coords):
         return compute_convex_hull(coords)

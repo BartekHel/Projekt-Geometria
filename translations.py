@@ -21,10 +21,11 @@ translations = {
         "coords_prompt": "Podaj współrzędne punktów:",
         "info_text": (
             "Projekt aplikacji geometrycznej składającej się z dwóch modułów:\n\n"
-            "1. Przecięcie dwóch odcinków – określa, czy odcinki (o współrzędnych np. 2,1 3,7 oraz 4,2 0,0) "
+            "1. Przecięcie dwóch odcinków – określa czy odcinki (o współrzędnych np. 2,1 3,7 oraz 4,2 0,0) "
             "przecinają się i zwraca punkt przecięcia lub odcinek przecięcia, jeśli się pokrywają.\n\n"
             "2. Otoczka wypukła – wyznacza otoczkę wypukłą zbioru punktów "
             "i określa jej typ: punkt, odcinek, trójkąt, czworokąt lub wielokąt.\n\n"
+            "Punkty można wybierać wpisując je manualnie lub klikając na wykresie (który można przesuwać)."
         ),
         "info_title": "Informacje o projekcie",
         "plot_title": "Kliknij aby zaznaczyć punkty",
@@ -65,6 +66,7 @@ translations = {
         "save_success": "Dane zostały zapisane pomyślnie.",
         "save_error": "Nie udało się zapisać danych.",
         "all_same_point": "Wszystkie punkty są identyczne:\n({x}, {y})",
+        "pairs_same_point": "Podano punkty, nie odcinki.",
         "special_info": "Przecięcie? Jeszcze jak!"
     },
     "EN": {
@@ -92,6 +94,7 @@ translations = {
             "intersect and returns the point of intersection or the overlapping segment if they are collinear.\n\n"
             "2. Convex hull – computes the convex hull of a set of points "
             "and identifies its type: point, segment, triangle, quadrilateral or polygon.\n\n"
+            "Points can be selected by entering them manually or by clicking on the graph (which can be moved)."
         ),
         "info_title": "Project Info",
         "plot_title": "Click to mark points",
@@ -131,6 +134,7 @@ translations = {
         "save_success": "Data saved successfully.",
         "save_error": "Failed to save data.",
         "all_same_point": "All points are identical:\n({x}, {y})",
+        "pairs_same_point": "Points are given, not sections.",
         "special_info": "Intersection? You bet!"
     }
 }
