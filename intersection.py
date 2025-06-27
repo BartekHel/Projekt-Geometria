@@ -4,6 +4,7 @@ from translations import tr
 Moduł do sprawdzania przecięcia dwóch odcinków w przestrzeni 2D.
 
 Wykorzystany algorytm:
+Algorytm przecięcia odcinków oparty na orientacji punktów (ang. Orientation Test / CCW Test) oraz analizie przypadków szczególnych (kolinearność).
 -------------------------
 Algorytm opiera się na klasycznym podejściu geometrycznym, które wykorzystuje orientację trzech punktów,
 iloczyn wektorowy oraz sprawdzenie warunku przecięcia na podstawie wzajemnych orientacji końców odcinków.

@@ -2,6 +2,11 @@ from translations import tr
 
 # Funkcja oblicza otoczkę wypukłą zbioru punktów na płaszczyźnie
 # przy użyciu algorytmu Andrew's Monotone Chain – jednego z wariantów algorytmu Grahama.
+# 
+# Cechy charakterystyczne algorytmu:
+# Sortowanie punktów leksykograficznie – najpierw po współrzędnej x, a potem po y
+# Konstrukcja dolnej i górnej części otoczki za pomocą testu iloczynu wektorowego (sprawdzanie czy skręcamy w lewo czy w prawo)
+# Łączenie obu części i usuwanie duplikatów końcowych punktów
 #
 # Działanie:
 # - Dla mniej niż 3 unikalnych punktów zwraca odpowiedni komunikat (punkt / odcinek).
