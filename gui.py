@@ -261,7 +261,7 @@ class AppWindow:
             flat_coords = [coord for pt in points for coord in pt]
 
             if mode == "intersection":
-                callback = lambda _: check_intersection(*flat_coords)
+                callback = lambda: check_intersection(*[float(e.get()) for e in self.entries])
                 self.render_intersection_coord_input(wrapper, callback)
             else:
                 callback = lambda pts: compute_convex_hull(pts)
@@ -479,7 +479,7 @@ class AppWindow:
                     return
 
                 coords = [float(s) for s in coords_str]
-                result_text, intersection_data = callback(coords)
+                result_text, intersection_data = callback()
 
                 if coords == [2.0, 1.0, 3.0, 7.0, 4.0, 2.0, 0.0, 0.0]:
                     result_text = f"{tr('special_info')}\n{result_text}"
@@ -623,7 +623,8 @@ class AppWindow:
         self.figure = fig
         self.canvas = canvas
 
-    def compute_intersection(self, coords):
+    def compute_intersection(self):
+        coords = [float(e.get()) for e in self.entries]
         return check_intersection(*coords)
 
     def open_convex_hull_window(self):
